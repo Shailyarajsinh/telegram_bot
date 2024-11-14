@@ -38,6 +38,19 @@ bot.command('sendMessage', async (ctx) => {
   }
 });
 
+bot.command('sendPhoto', async (ctx) => {
+  const userId = ctx.from.id;
+  const photoUrl = 'https://images.unsplash.com/photo-1726853546098-380e29da9e31?q=80&w=1770&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
+  
+  try {
+    await ctx.telegram.sendPhoto(userId, photoUrl);
+    ctx.reply('Photo sent successfully!');
+  } catch (error) {
+    console.error('Error sending photo:', error);
+    ctx.reply('Failed to send photo.');
+  }
+});
+
 bot.hears('I Info', (ctx) => {
   ctx.reply('This is a simple bot that sends messages to users.');
 });
