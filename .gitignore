@@ -1,3 +1,16 @@
+# Ignore Node modules and environment variables
 node_modules/
+.env
+
+# Ignore compiled JavaScript files
 dist/
-.env/
+*.js
+*.js.map
+
+# Ignore TypeScript cache
+.tscache/
+
+# Ignore OS and editor-specific files
+.DS_Store
+*.log
+.vscode/
