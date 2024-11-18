@@ -7,12 +7,15 @@ dotenv.config();
 const bot = new Telegraf(process.env.BOT_TOKEN as string);
 
 const keyboard = Markup.inlineKeyboard([
-  [Markup.button.url('Launch App', 'http://t.me/RatsKingdom_Bot/join'), Markup.button.url('Join Telegram', 'http://t.me/The_RatsKingdom')],
+  [
+    Markup.button.url('Launch App', 'http://t.me/RatsKingdom_Bot/join'),
+    Markup.button.url('Join Telegram', 'http://t.me/The_RatsKingdom'),
+  ],
 ]);
 
 const message = `🚨 FINAL & BIGGEST CHANCE: Earn 1,00,000 $RATS by Inviting 5 Friends! 🚨
 
-As we’ve reached an incredible 6 Million user milestone, it’s time for the biggest opportunity yet for everyone! Many of you have been requesting another chance to earn more $RATS, especially those who missed our first "Invite 5 Friends" task. 
+As we’ve reached an incredible 8 Million user milestone, it’s time for the biggest opportunity yet for everyone! Many of you have been requesting another chance to earn more $RATS, especially those who missed our first "Invite 5 Friends" task. 
 
 So here it is—the new and LAST refer task designed to reward you for helping expand our Rats Kingdom community!
 
@@ -24,25 +27,34 @@ So here it is—the new and LAST refer task designed to reward you for helping e
 
 const imagePath = './src/images/6million_invite_task.png';
 
-// Replace this with a sample Telegram ID for testing
-const sampleTelegramId = process.env.TELEGRAM_ID as string;
+// Add the Telegram IDs of multiple users here
+const telegramIds = (process.env.TELEGRAM_IDS as string)?.split(',');
 
-const sendMessage = async () => {
-  try {
-    await bot.telegram.sendMessage(sampleTelegramId, message, {
-      reply_markup: keyboard.reply_markup,
-    });
-    if (fs.existsSync(imagePath)) {
-      await bot.telegram.sendPhoto(sampleTelegramId, { source: imagePath });
-    } else {
-      console.log("Image path not found, sending text only.");
+const sendMessageToUsers = async () => {
+  if (!telegramIds || telegramIds.length === 0) {
+    console.error('No Telegram IDs provided in TELEGRAM_IDS');
+    return;
+  }
+
+  for (const id of telegramIds) {
+    try {
+      console.log(`Sending message to Telegram ID: ${id}`);
+      await bot.telegram.sendMessage(id, message, {
+        reply_markup: keyboard.reply_markup,
+      });
+
+      if (fs.existsSync(imagePath)) {
+        await bot.telegram.sendPhoto(id, { source: imagePath });
+      } else {
+        console.log(`Image not found. Sent text only to ${id}.`);
+      }
+      console.log(`Message sent successfully to Telegram ID: ${id}`);
+    } catch (error) {
+      console.error(`Error sending message to Telegram ID ${id}:`, error);
     }
-    console.log('Message sent successfully!');
-  } catch (error) {
-    console.error('Error sending message:', error);
   }
 };
 
-// Start the bot and run the function
+// Start the bot and send messages
 bot.launch();
-sendMessage();
+sendMessageToUsers();
